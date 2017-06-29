@@ -1,49 +1,53 @@
- $(document).ready(function() {
+$(document).ready(function() {
         var $body = $('body');
-        $body.html('');
 
-        // twittler header
-        var header = $('<h1>twittler</h1>');
-        $(header).prependTo($body);
+        $('button#home').hide();
 
-        // new tweets button
         var newTweets = $('<button>New Tweets</button>');
         $(newTweets).appendTo($body);
-    
-        // feed 
-        var userFeed = $('<p>Your Feed</p>');
-        $(userFeed).appendTo($body);
 
-        /* show the user new tweets either by creating a button */
-
-        // event handler for new tweets button
-        // generates new tweets
         $(newTweets).on('click', function() {
           var index = streams.home.length - 1;
           while(index >= 0){
             var tweet = streams.home[index];
-            var $tweet = $('<div></div>');
-            var $user = $('<a href="#top" class="user"></a>');
-            $user.attr('data-user', tweet.user);
-            $user.text('@' + tweet.user);
-            $tweet.text(': ' + tweet.message + ' ' + tweet.created_at);
+            var $tweet = $('<ul class="tweet"></ul>');
+            var $user = $('<li></li>');
+            $tweet.text(tweet.message + ' ' + tweet.created_at);
+            $user.text('@' + tweet.user + ': ');
             $user.prependTo($tweet);
             $tweet.appendTo($body);
+            $tweet.addClass(tweet.user);
             index -= 1;
           }
         });
 
-        /* allow the user to click on a username to see that user's timeline */
+        $('body').on('click', 'li', userFeed);
 
-        $('.user').on('click', function() {
-            var user = $(this).data('user');
-            var index = streams.users[user].length - 1;
-            while(index >= 0) {
-              var $tweet = $('<div></div>');
-              var tweet = streams.users[user][index];
-              $tweet.text(tweet.message + ' '+ tweet.created_at);
-              $tweet.appendTo($body);
-              index -= 1;
-            }
-        });
+        function userFeed() {
+          if ($(this).parent().hasClass('shawndrost')) {
+            user = 'shawndrost';
+          } else if ($(this).parent().hasClass('sharksforcheap')) {
+            user = 'sharksforcheap';
+          } else if ($(this).parent().hasClass('mracus')){
+            user = 'mracus';
+          } else if ($(this).parent().hasClass('douglascalhoun')) {
+            user = 'douglascalhoun';
+          }
+
+          $('.tweet').hide();
+          $(newTweets).hide();
+          $('button#home').show();
+          $("." + user).show();
+        }
+
+        $(document).on('click', 'button#home', showFeed);
+        
+        function showFeed() {
+          $('.tweet').show();
+          $(newTweets).show();
+          $('button#home').hide();
+        }
+
       });
+
+
